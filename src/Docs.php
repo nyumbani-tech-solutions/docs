@@ -147,7 +147,7 @@ class Docs
     {
         return route('docs.page', [
             'package' => $this->slug,
-            'page' => $page === $this->home ? null : $page
+            'page' => $page === $this->home ? null : $page,
         ]);
     }
 
@@ -201,8 +201,8 @@ class Docs
         $next = $slugs->get($position + 1);
 
         //  Get the previous page
-        $previous = $position > 0 && $previous 
-            ? [$previous => $this->pages()[$previous]] 
+        $previous = $position > 0 && $previous
+            ? [$previous => $this->pages()[$previous]]
             : null;
 
         //  Get the next page
