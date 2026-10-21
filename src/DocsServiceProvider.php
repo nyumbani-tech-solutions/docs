@@ -25,11 +25,15 @@ class DocsServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //  Load the routes
-        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+        $this->loadRoutesFrom(docs_path('routes/web.php'));
 
-        //  Load the layout and the components
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'docs');
-        Blade::anonymousComponentPath(__DIR__.'/../resources/views/components', 'docs');
+        //  Load views
+        $this->loadViewsFrom(docs_path('resources/views'), 'docs');
+
+        //  Load components
+        Blade::anonymousComponentPath(docs_path('resources/views/components'), 'docs');
+
+        //  Register components
         Blade::componentNamespace('Nyumbani\\Docs\\Views\\Components', 'docs');
     }
 }

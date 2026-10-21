@@ -37,15 +37,17 @@ class Docs
     /**
      * Load the app's own head and footer markup around the docs, for pages whose live examples need the app's styles and scripts
      *
-     * The attributes go on the html tag, for scripts that read them. Without it the docs bring their own styles and scripts, so a package works in any Laravel app.
-     *
      * @author Alvin G. Kaburu <geekaburu@nyumbanitech.co.ke>
      */
     public function withAppAssets(string $head, string $foot, array $htmlAttributes = []): static
     {
-        //  Keep the views
+        //  Define the head
         $this->head = $head;
+
+        //  Define the foot
         $this->foot = $foot;
+
+        //  Define the html attributes
         $this->htmlAttributes = $htmlAttributes;
 
         //  Return the docs
@@ -101,17 +103,28 @@ class Docs
     }
 
     /**
+     * Find a built file or image of the docs on disk, or null when the package does not ship it
+     *
+     * @author Alvin G. Kaburu <geekaburu@nyumbanitech.co.ke>
+     */
+    public static function assetPath(string $file): ?string
+    {
+        return collect(['dist', 'images'])
+            ->map(fn (string $folder) => docs_path("resources/{$folder}/{$file}"))
+            ->first(fn (string $candidate) => is_file($candidate));
+    }
+
+    /**
      * Get the url of a built file or image of the docs, which changes when the file does so a browser never keeps an old copy
      *
      * @author Alvin G. Kaburu <geekaburu@nyumbanitech.co.ke>
      */
     public static function asset(string $file): string
     {
-        //  Find the file where the build and the images are kept
-        $path = collect(['dist', 'images'])
-            ->map(fn (string $folder) => __DIR__."/../resources/{$folder}/{$file}")
-            ->first(fn (string $candidate) => is_file($candidate));
+        //  Get the path
+        $path = static::assetPath($file);
 
+        //  Return the url
         return route('docs.asset', ['file' => $file]).($path ? '?v='.filemtime($path) : '');
     }
 
@@ -132,7 +145,10 @@ class Docs
      */
     public function url(?string $page = null): string
     {
-        return route('docs.page', ['package' => $this->slug, 'page' => $page === $this->home ? null : $page]);
+        return route('docs.page', [
+            'package' => $this->slug,
+            'page' => $page === $this->home ? null : $page
+        ]);
     }
 
     /**
@@ -172,17 +188,30 @@ class Docs
      */
     public function neighbours(string $slug): array
     {
-        //  Find where the page sits in the reading order
+        //  Get the slugs
         $slugs = $this->pages()->keys();
+
+        //  Get the position
         $position = $slugs->search($slug);
 
-        //  Pick the pages either side of it
+        //  Get the previous slug
         $previous = $slugs->get($position - 1);
+
+        //  Get the next slug
         $next = $slugs->get($position + 1);
 
+        //  Get the previous page
+        $previous = $position > 0 && $previous 
+            ? [$previous => $this->pages()[$previous]] 
+            : null;
+
+        //  Get the next page
+        $next = $next ? [$next => $this->pages()[$next]] : null;
+
+        //  Return the pages
         return [
-            'previous' => $position > 0 && $previous ? [$previous => $this->pages()[$previous]] : null,
-            'next' => $next ? [$next => $this->pages()[$next]] : null,
+            'previous' => $previous,
+            'next' => $next,
         ];
     }
 }

@@ -1,6 +1,9 @@
 /* The styles of the Nyumbani docs: the shared palette and form styles, plus the docs components. Built into dist/docs.css. */
 @import 'tailwindcss';
 
+/* The colours of the code blocks */
+@import 'highlight.js/styles/github-dark.css';
+
 /* Every docs view: this package's own, and the docs pages of the packages it serves, which are siblings in the monorepo */
 @source '../views/**/*.blade.php';
 @source '../../src/**/*.php';

@@ -1,16 +1,19 @@
+@use('Illuminate\View\ComponentAttributeBag')
+@use('Nyumbani\Docs\Docs')
+
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full" {{ new \Illuminate\View\ComponentAttributeBag($docs->htmlAttributes) }}>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full" {{ new ComponentAttributeBag($docs->htmlAttributes) }}>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ trim($__env->yieldContent('page')) }} · Nyumbani {{ $docs->name }} docs</title>
-    <link rel="icon" type="image/png" href="{{ \Nyumbani\Docs\Docs::asset('icon.png') }}">
-    <link rel="stylesheet" href="{{ \Nyumbani\Docs\Docs::asset('docs.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <link rel="icon" type="image/png" href="{{ Docs::asset('icon.png') }}">
+    <link rel="stylesheet" href="{{ Docs::asset('docs.css') }}">
     @isset($docs->head)
         @include($docs->head)
     @endisset
+
     @stack('styles')
 </head>
 <body class="h-full bg-gray-50 text-gray-700 antialiased">
@@ -20,7 +23,7 @@
             <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" /></svg>
         </button>
         <a href="{{ $docs->url() }}" class="flex items-center gap-3">
-            <img src="{{ \Nyumbani\Docs\Docs::asset('icon.png') }}" alt="Nyumbani" class="h-8 w-8 object-contain">
+            <img src="{{ Docs::asset('icon.png') }}" alt="Nyumbani" class="h-8 w-8 object-contain">
             <span class="text-sm font-bold uppercase tracking-[.2rem]">Nyumbani</span>
             <span class="rounded-full bg-primary px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-white">{{ $docs->name }} docs</span>
         </a>
@@ -93,51 +96,13 @@
     </div>
 
     @isset($docs->foot)
-        {{--  The app brings its own Alpine, so the docs do not start a second one  --}}
         @include($docs->foot)
     @else
-        <script type="module" src="{{ \Nyumbani\Docs\Docs::asset('docs.js') }}"></script>
+        <script type="module" src="{{ Docs::asset('alpine.js') }}"></script>
     @endisset
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script type="module" src="{{ Docs::asset('docs.js') }}"></script>
+    
     @stack('js')
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            //  Colour the code, when the highlighter could be loaded
-            if (window.hljs) document.querySelectorAll('pre code').forEach((block) => window.hljs.highlightElement(block));
-
-            //  Copy a code block
-            document.addEventListener('click', (event) => {
-                const button = event.target.closest('[data-docs-copy]');
-                if (!button) return;
-                navigator.clipboard.writeText(button.closest('figure').querySelector('code').innerText).then(() => {
-                    button.textContent = 'Copied';
-                    setTimeout(() => (button.textContent = 'Copy'), 1500);
-                });
-            });
-
-            //  Open and close the menu on small screens
-            const sidebar = document.querySelector('[data-docs-sidebar]');
-            document.querySelector('[data-docs-menu]').addEventListener('click', () => sidebar.classList.toggle('hidden'));
-
-            //  Filter the sidebar
-            document.querySelector('[data-docs-filter]').addEventListener('input', (event) => {
-                const term = event.target.value.toLowerCase();
-                document.querySelectorAll('[data-docs-link]').forEach((item) => item.classList.toggle('hidden', !item.textContent.toLowerCase().includes(term)));
-                document.querySelectorAll('[data-docs-group]').forEach((group) => group.classList.toggle('hidden', !group.querySelector('[data-docs-link]:not(.hidden)')));
-            });
-
-            //  List the sections of the page
-            const toc = document.querySelector('[data-docs-toc]');
-            document.querySelectorAll('[data-docs-section]').forEach((section) => {
-                const item = document.createElement('li');
-                item.innerHTML = '<a class="-ml-px block border-l border-transparent py-0.5 pl-3 text-gray-500 hover:border-primary hover:text-primary-dark"></a>';
-                item.firstChild.href = '#' + section.id;
-                item.firstChild.textContent = section.querySelector('h2').firstChild.textContent.trim();
-                toc.appendChild(item);
-            });
-        });
-    </script>
 </body>
 </html>

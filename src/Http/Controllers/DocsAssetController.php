@@ -2,6 +2,7 @@
 
 namespace Nyumbani\Docs\Http\Controllers;
 
+use Nyumbani\Docs\Docs;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class DocsAssetController
@@ -14,9 +15,7 @@ class DocsAssetController
     public function __invoke(string $file): BinaryFileResponse
     {
         //  Look for the file where the build and the images are kept
-        $path = collect(['dist', 'images'])
-            ->map(fn (string $folder) => __DIR__."/../../../resources/{$folder}/{$file}")
-            ->first(fn (string $candidate) => is_file($candidate));
+        $path = Docs::assetPath($file);
 
         //  Only the files the package ships can be served
         abort_unless($path, 404);
