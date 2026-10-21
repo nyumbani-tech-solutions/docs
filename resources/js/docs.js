@@ -28,6 +28,34 @@ function highlightCode() {
 }
 
 /**
+ * Copy text to the clipboard, also on a page that is not served over https, where the clipboard api does not exist
+ */
+function copyText(text) {
+    //  The clipboard api, where the page is allowed to use it
+    if (navigator.clipboard && window.isSecureContext) {
+        return navigator.clipboard.writeText(text);
+    }
+
+    //  Otherwise select the text in a hidden field and copy it as a browser always could
+    const field = document.createElement('textarea');
+    field.value = text;
+    field.setAttribute('readonly', '');
+    field.style.position = 'fixed';
+    field.style.opacity = '0';
+    document.body.appendChild(field);
+    field.select();
+
+    //  Copy it, then remove the field
+    const copied = document.execCommand('copy');
+    field.remove();
+
+    return copied ? Promise.resolve() : Promise.reject(new Error('The browser did not copy.'));
+}
+
+//  The playground copies JSON the same way
+window.docsCopy = copyText;
+
+/**
  * Copy the code of a block when its button is pressed, and say so on the button
  */
 function listenForCopy() {
@@ -38,8 +66,7 @@ function listenForCopy() {
         if (! button) return;
 
         //  Copy the code of the block the button sits in
-        navigator.clipboard
-            .writeText(button.closest('figure').querySelector('code').innerText)
+        copyText(button.closest('figure').querySelector('code').innerText)
             .then(() => {
                 //  Say it was copied
                 button.textContent = 'Copied';

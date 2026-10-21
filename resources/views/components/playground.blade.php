@@ -175,7 +175,7 @@
                  * Copy a value to the clipboard and say so on the button
                  */
                 copy(value, button) {
-                    navigator.clipboard.writeText(value).then(() => {
+                    window.docsCopy(value).then(() => {
                         button.textContent = 'Copied';
                         setTimeout(() => (button.textContent = 'Copy'), 1500);
                     });
