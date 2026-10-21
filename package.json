@@ -1,0 +1,15 @@
+{
+    "name": "@nyumbani/docs",
+    "private": true,
+    "type": "module",
+    "description": "Builds resources/dist, the styles and the Alpine script of the Nyumbani docs, so they work in any Laravel app. Run npm run build after changing a docs view, in this package or in a package whose docs it serves.",
+    "scripts": {
+        "build": "vite build"
+    },
+    "devDependencies": {
+        "@tailwindcss/vite": "^4.3.3",
+        "alpinejs": "^3.15.0",
+        "tailwindcss": "^4.3.3",
+        "vite": "^8.0.0"
+    }
+}

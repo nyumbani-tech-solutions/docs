@@ -1,0 +1,115 @@
+/* The styles of the Nyumbani docs: the shared palette and form styles, plus the docs components. Built into dist/docs.css. */
+@import 'tailwindcss';
+
+/* Every docs view: this package's own, and the docs pages of the packages it serves, which are siblings in the monorepo */
+@source '../views/**/*.blade.php';
+@source '../../src/**/*.php';
+@source '../../../essentials/resources/views/docs/**/*.blade.php';
+@source '../../../daraja/resources/views/docs/**/*.blade.php';
+@source '../../../messaging/resources/views/docs/**/*.blade.php';
+
+@theme {
+    --color-primary-darker: #7a4708;
+    --color-primary-dark: #9a5204;
+    --color-primary: #d97706;
+
+    --color-secondary-dark: #0f1419;
+    --color-secondary: #1f2937;
+    --color-secondary-light: #4a657f;
+}
+
+@layer base {
+    html, body {
+        @apply h-full bg-gray-100 text-[15px] text-gray-700;
+    }
+
+    [type='text'], [type='file'], input:where(:not([type])), [type='email'], [type='url'], [type='password'], [type='number'], [type='date'], [type='datetime-local'], [type='month'], [type='search'], [type='tel'], [type='time'], [type='week'], [multiple], textarea, select {
+        @apply block w-full! bg-white border border-solid border-gray-300! text-sm! rounded-sm! shadow-sm! placeholder-gray-400! text-gray-600! px-3 py-2.5 focus:border-primary! focus:ring-1 focus:ring-primary! focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:opacity-70;
+    }
+
+    [type='checkbox'], [type='radio'] {
+        @apply border border-solid border-gray-300! rounded-sm! text-primary! focus:ring-primary!;
+    }
+
+    /* A control right after an icon element, or right before a password toggle, makes room for it. */
+    span[data-icon] + input, span[data-icon] + select {
+        @apply pl-10;
+    }
+
+    input:has(+ [data-password-toggle]) {
+        @apply pr-11;
+    }
+
+    /* Invalid controls get a red border. */
+    [aria-invalid='true'] {
+        @apply border-red-900!;
+    }
+
+    [aria-required='true'] {
+        @apply before:text-red-600 before:content-['*'] before:inline-block before:mr-1;
+    }
+
+    label {
+        @apply block text-gray-600 text-sm font-semibold mb-1.5;
+    }
+
+    button {
+        @apply cursor-pointer;
+    }
+
+    [x-cloak] {
+        display: none !important;
+    }
+}
+
+@layer components {
+    .btn {
+        @apply inline-flex items-center justify-center gap-2 select-none whitespace-nowrap text-center no-underline align-middle py-1.5 px-3 text-sm font-medium border border-transparent rounded-sm cursor-pointer transition-colors duration-150 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none disabled:active:scale-100;
+
+        &.btn-lg {
+            @apply text-base! py-2! px-5! font-semibold!;
+        }
+
+        &.btn-sm {
+            @apply text-xs! py-1! px-2! font-medium!;
+        }
+
+        /* Every button is primary: .btn-secondary is kept so existing markup does not change colour */
+        &.btn-primary, &.btn-secondary {
+            @apply bg-primary-darker hover:bg-primary-dark text-white shadow-sm hover:shadow-md focus-visible:ring-primary-dark;
+        }
+    }
+
+    /* The body copy of the Nyumbani docs */
+    .docs-prose {
+        @apply text-[15px] leading-7 text-gray-600;
+
+        & p {
+            @apply my-3;
+        }
+
+        & h3 {
+            @apply mb-2 mt-7 text-lg font-semibold text-secondary-dark;
+        }
+
+        & ul {
+            @apply my-3 list-disc space-y-1.5 pl-6 marker:text-primary;
+        }
+
+        & ol {
+            @apply my-3 list-decimal space-y-1.5 pl-6 marker:font-semibold marker:text-primary;
+        }
+
+        & a {
+            @apply font-medium text-primary-dark underline decoration-primary/40 underline-offset-2 hover:decoration-primary;
+        }
+
+        & :not(pre) > code {
+            @apply rounded bg-primary/10 px-1.5 py-0.5 text-[13px] text-primary-darker;
+        }
+
+        & pre code.hljs {
+            @apply bg-transparent;
+        }
+    }
+}
