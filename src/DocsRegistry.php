@@ -39,12 +39,12 @@ class DocsRegistry
     }
 
     /**
-     * Get the docs of every package, ordered by slug
+     * Get the docs of every package, Essentials first and the rest ordered by slug
      *
      * @author Alvin G. Kaburu <geekaburu@nyumbanitech.co.ke>
      */
     public function all(): Collection
     {
-        return collect($this->docs)->sortKeys();
+        return collect($this->docs)->sortKeys()->sortBy(fn (Docs $docs) => $docs->slug === 'nyumbani-essentials' ? 0 : 1);
     }
 }

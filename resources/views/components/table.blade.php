@@ -1,3 +1,4 @@
+@use('Illuminate\Support\HtmlString')
 @props(['columns', 'rows'])
 
 <div class="my-5 overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
@@ -13,10 +14,11 @@
             @foreach ($rows as $row)
                 <tr class="align-top">
                     @foreach ($row as $cell)
-                        @if ($loop->first)
+                        {{--  The first cell is a name, shown as code unless it already marks its own code with backticks; any cell may mark code with backticks  --}}
+                        @if ($loop->first && ! str_contains($cell, '`'))
                             <td class="px-4 py-2.5"><code class="rounded bg-primary/10 px-1.5 py-0.5 text-[13px] text-primary-darker">{{ $cell }}</code></td>
                         @else
-                            <td class="px-4 py-2.5 text-gray-600">{{ $cell }}</td>
+                            <td class="px-4 py-2.5 text-gray-600">{{ new HtmlString(preg_replace('/`([^`]+)`/', '<code class="rounded bg-primary/10 px-1.5 py-0.5 text-[13px] text-primary-darker">$1</code>', e($cell))) }}</td>
                         @endif
                     @endforeach
                 </tr>

@@ -31,8 +31,11 @@ class Code extends Component
      */
     public function dedent(mixed $code): string
     {
+        //  Restore the opening php tags written as entities, since Blade would run a literal one
+        $code = str_replace('&lt;?php', '<?php', (string) $code);
+
         //  Split the code into lines
-        $lines = explode("\n", trim((string) $code, "\n\r"));
+        $lines = explode("\n", trim($code, "\n\r"));
 
         //  Find the smallest indentation after the first line, which the slot has already trimmed
         $indent = collect(array_slice($lines, 1))
