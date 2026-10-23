@@ -8,7 +8,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ trim($__env->yieldContent('page')) }} · Nyumbani {{ $docs->name }} docs</title>
-    <link rel="icon" type="image/png" href="{{ Docs::asset('icon.png') }}">
+    <link rel="icon" type="image/x-icon" href="{{ Docs::asset('favicon.ico') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ Docs::asset('favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ Docs::asset('favicon-16x16.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ Docs::asset('apple-touch-icon.png') }}">
     <link rel="stylesheet" href="{{ Docs::asset('docs.css') }}">
     @isset($docs->head)
         @include($docs->head)
