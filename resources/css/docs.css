@@ -9,6 +9,7 @@
 @source '../../src/**/*.php';
 @source '../../../essentials/resources/views/docs/**/*.blade.php';
 @source '../../../daraja/resources/views/docs/**/*.blade.php';
+@source '../../../ui/resources/views/docs/**/*.blade.php';
 @source '../../../messaging/resources/views/docs/**/*.blade.php';
 @source '../../../dt-tables/resources/views/docs/**/*.blade.php';
 
